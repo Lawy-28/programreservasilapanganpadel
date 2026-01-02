@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('nama', 100);
             $table->string('no_hp', 15);
             $table->string('email', 100)->nullable();
-            $table->enum('status', ['aktif', 'nonaktif']);
+            $table->enum('status', ['Aktif', 'Nonaktif']);
             $table->timestamps();
         });
     }

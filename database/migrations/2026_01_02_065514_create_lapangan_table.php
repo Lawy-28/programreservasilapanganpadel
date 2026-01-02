@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('nama_lapangan', 50);
             $table->enum('kategori', ['VIP', 'Reguler']);
             $table->integer('harga_per_jam');
-            $table->enum('status_lapangan', ['tersedia', 'perawatan']);
+            $table->enum('status_lapangan', ['Tersedia', 'Perawatan']);
             $table->timestamps();
         });
     }

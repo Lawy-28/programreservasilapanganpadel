@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->time('jam_mulai');
             $table->time('jam_selesai');
             $table->integer('total_bayar');
-            $table->enum('status_reservasi', ['booked', 'selesai', 'batal']);
+            $table->enum('status_reservasi', ['Booked', 'Selesai', 'Batal']);
             $table->timestamps();
         });
     }
