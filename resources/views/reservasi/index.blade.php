@@ -3,66 +3,87 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Data Reservasi</h2>
-            <a href="{{ route('reservasi.create') }}" class="btn btn-primary">Buat Reservasi Baru</a>
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="card-title mb-0 fw-bold">Data Reservasi</h5>
+                <small class="text-muted">Kelola jadwal dan pembayaran reservasi</small>
+            </div>
+            <div>
+                <a href="{{ route('reservasi.create') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i> Buat Reservasi
+                </a>
+            </div>
         </div>
 
-        @if ($reservasi->isEmpty())
-            <p style="text-align: center; color: #777;">Belum ada data reservasi.</p>
-        @else
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Pelanggan</th>
-                        <th>Lapangan</th>
-                        <th>Waktu Main</th>
-                        <th>Total Bayar</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($reservasi as $r)
+        <div class="card-body p-0">
+            @if ($reservasi->isEmpty())
+                <div class="text-center py-5">
+                    <i class="bi bi-calendar-x fs-1 text-muted mb-3 d-block"></i>
+                    <p class="text-muted">Belum ada data reservasi.</p>
+                </div>
+            @else
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>
-                                <strong>{{ $r->pelanggan->nama }}</strong><br>
-                                <small style="color: #666;">{{ $r->pelanggan->no_hp }}</small>
-                            </td>
-                            <td>{{ $r->lapangan->nama_lapangan }}</td>
-                            <td>
-                                {{ \Carbon\Carbon::parse($r->tanggal)->format('d M Y') }}<br>
-                                <small>{{ \Carbon\Carbon::parse($r->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($r->jam_selesai)->format('H:i') }}</small>
-                            </td>
-                            <td>Rp {{ number_format($r->total_bayar, 0, ',', '.') }}</td>
-                            <td>
-                                @if($r->status_reservasi == 'Booked')
-                                    <span style="color: blue; font-weight: bold;">Booked</span>
-                                @elseif($r->status_reservasi == 'Selesai')
-                                    <span style="color: green; font-weight: bold;">Selesai</span>
-                                @else
-                                    <span style="color: red; font-weight: bold;">Batal</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('reservasi.edit', $r->id_reservasi) }}" class="btn btn-primary"
-                                    style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Edit</a>
-
-                                <form action="{{ route('reservasi.destroy', $r->id_reservasi) }}" method="POST"
-                                    style="display: inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;"
-                                        onclick="return confirm('Batalkan reservasi ini?')">Hapus</button>
-                                </form>
-                            </td>
+                            <th class="ps-4">No</th>
+                            <th>Pelanggan</th>
+                            <th>Lapangan</th>
+                            <th>Waktu Main</th>
+                            <th>Total Bayar</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Aksi</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
+                    </thead>
+                    <tbody>
+                        @foreach ($reservasi as $r)
+                            <tr>
+                                <td class="ps-4">{{ $loop->iteration }}</td>
+                                <td>
+                                    <div class="fw-medium">{{ $r->pelanggan->nama }}</div>
+                                    <small class="text-muted">{{ $r->pelanggan->no_hp }}</small>
+                                </td>
+                                <td>{{ $r->lapangan->nama_lapangan }}</td>
+                                <td>
+                                    <div>{{ \Carbon\Carbon::parse($r->tanggal)->format('d M Y') }}</div>
+                                    <small class="text-muted">
+                                        {{ \Carbon\Carbon::parse($r->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($r->jam_selesai)->format('H:i') }}
+                                    </small>
+                                </td>
+                                <td class="fw-medium">Rp {{ number_format($r->total_bayar, 0, ',', '.') }}</td>
+                                <td>
+                                    @if($r->status_reservasi == 'Booked')
+                                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Booked</span>
+                                    @elseif($r->status_reservasi == 'Selesai')
+                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Selesai</span>
+                                    @else
+                                        <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">Batal</span>
+                                    @endif
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a href="{{ route('reservasi.edit', $r->id_reservasi) }}" 
+                                           class="btn btn-sm btn-outline-primary" 
+                                           title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form action="{{ route('reservasi.destroy', $r->id_reservasi) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-outline-danger" 
+                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus reservasi ini?')"
+                                                    title="Hapus">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
     </div>
 
 @endsection

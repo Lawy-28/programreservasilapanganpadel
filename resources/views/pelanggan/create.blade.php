@@ -1,51 +1,63 @@
 @extends('layout')
 
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Tambah Pelanggan</h2>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0 fw-bold">Tambah Pelanggan Baru</h5>
         </div>
 
-        @if ($errors->any())
-            <div class="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
         <form action="{{ route('pelanggan.store') }}" method="POST">
             @csrf
 
-            <div class="form-group">
-                <label for="nama">Nama Lengkap</label>
-                <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}" required>
+            <div class="mb-3">
+                <label for="nama" class="form-label fw-bold">Nama Lengkap</label>
+                <input type="text" name="nama" id="nama" class="form-control" value="{{ old('nama') }}" placeholder="Contoh: Budi Santoso" required>
             </div>
 
-            <div class="form-group">
-                <label for="no_hp">No HP</label>
-                <input type="number" name="no_hp" id="no_hp" class="form-control" value="{{ old('no_hp') }}" required>
+            <div class="mb-3">
+                <label for="no_hp" class="form-label fw-bold">No HP</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                    <input type="number" name="no_hp" id="no_hp" class="form-control" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx" required>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email <small>(Opsional)</small></label>
-                <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}">
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Email <small class="text-muted fw-normal">(Opsional)</small></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" placeholder="nama@email.com">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select name="status" id="status" class="form-control">
+            <div class="mb-4">
+                <label for="status" class="form-label fw-bold">Status</label>
+                <select name="status" id="status" class="form-select">
                     <option value="aktif" {{ old('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                 </select>
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-success">Simpan Data</button>
-                <a href="{{ route('pelanggan.index') }}" class="btn" style="background-color: #ccc;">Batal</a>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-save me-1"></i> Simpan Data
+                </button>
+                <a href="{{ route('pelanggan.index') }}" class="btn btn-light border px-4">
+                    Batal
+                </a>
             </div>
         </form>
-    </div>
+    </div> <!-- Closing card-body -->
+</div> <!-- Closing card -->
 @endsection

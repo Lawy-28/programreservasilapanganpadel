@@ -1,34 +1,33 @@
 @extends('layout')
 
 @section('content')
-
-    <div class="card" style="max-width: 600px; margin: 0 auto;">
-        <div class="card-header" style="justify-content: center; border-bottom: none;">
-            <h2 class="card-title">Form Data Lapangan (Edit)</h2>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0 fw-bold">Edit Data Lapangan</h5>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger"
-                style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 1rem; margin-bottom: 1rem; border-radius: 4px;">
-                <ul style="margin: 0; padding-left: 20px;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <form action="{{ route('lapangan.update', $lapangan->id_lapangan) }}" method="POST">
+            <form action="{{ route('lapangan.update', $lapangan->id_lapangan) }}" method="POST">
             @csrf
             @method('PUT')
 
-            <div class="form-group">
-                <label for="nama_lapangan">Nama Lapangan :</label>
+            <div class="mb-3">
+                <label for="nama_lapangan" class="form-label fw-bold">Nama Lapangan :</label>
                 <input type="text" name="nama_lapangan" id="nama_lapangan" class="form-control" value="{{ old('nama_lapangan', $lapangan->nama_lapangan) }}" required>
             </div>
 
-            <div class="form-group">
-                <label for="kategori">Kategori :</label>
+            <div class="mb-3">
+                <label for="kategori" class="form-label fw-bold">Kategori :</label>
                 <select name="kategori" id="kategori" class="form-control" required>
                     <option value="VIP"
                         {{ strtolower(old('kategori', $lapangan->kategori)) == 'vip' ? 'selected' : '' }}>
@@ -42,13 +41,16 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="harga_per_jam">Harga :</label>
-                <input type="number" name="harga_per_jam" id="harga_per_jam" class="form-control" value="{{ old('harga_per_jam', $lapangan->harga_per_jam) }}" required>
+            <div class="mb-3">
+                <label for="harga_per_jam" class="form-label fw-bold">Harga</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                    <input type="number" name="harga_per_jam" id="harga_per_jam" class="form-control" value="{{ old('harga_per_jam', $lapangan->harga_per_jam) }}" required>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="status_lapangan">Status :</label>
+            <div class="mb-3">
+                <label for="status_lapangan" class="form-label fw-bold">Status</label>
                 <select name="status_lapangan" id="status_lapangan" class="form-control" required>
                     <option value="Tersedia" {{ strtolower(old('status_lapangan', $lapangan->status_lapangan)) == 'tersedia' ? 'selected' : '' }}>
                         Tersedia
@@ -59,12 +61,14 @@
                 </select>
             </div>
 
-            <div class="form-actions" style="justify-content: flex-start;">
-                <button type="submit" class="btn btn-primary"
-                    style="background-color: #e0e0e0; border: 1px solid #ccc;">Simpan</button>
-                <a href="{{ route('lapangan.index') }}" class="btn btn-primary"
-                    style="background-color: #e0e0e0; border: 1px solid #ccc;">Kembali</a>
-            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-save me-1"></i> Simpan Data
+                </button>
+                <a href="{{ route('lapangan.index') }}" class="btn btn-light border px-4">
+                    Batal
+                </a>    
+            </div>  
         </form>
     </div>
 

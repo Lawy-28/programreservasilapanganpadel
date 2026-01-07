@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 class LapanganController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua lapangan yang tersedia.
+     * Mengambil data dari tabel 'lapangan' dan menampilkannya di view index.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -17,7 +20,9 @@ class LapanganController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan formulir untuk membuat lapangan baru.
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -25,10 +30,15 @@ class LapanganController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan data lapangan baru ke dalam database.
+     * Validasi input sebelum penyimpanan data.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
+        // Validasi input
         $validated = $request->validate([
             'nama_lapangan' => 'required|string|max:50',
             'kategori' => 'required|in:VIP,Reguler',
@@ -36,25 +46,31 @@ class LapanganController extends Controller
             'status_lapangan' => 'required|in:Tersedia,Perawatan',
         ]);
 
+        // Simpan data lapangan baru
         Lapangan::create($validated);
 
+        // Redirect kembali dengan pesan sukses
         return redirect()
             ->route('lapangan.index')
             ->with('success', 'Lapangan berhasil ditambahkan');
     }
 
-
     /**
-     * Display the specified resource.
+     * Menampilkan detail spesifik dari sebuah lapangan.
+     *
+     * @param  \App\Models\Lapangan  $lapangan
+     * @return \Illuminate\View\View
      */
     public function show(Lapangan $lapangan)
     {
-        // Not strictly requested but good generic method
         return view('lapangan.show', compact('lapangan'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan formulir untuk mengedit data lapangan.
+     *
+     * @param  \App\Models\Lapangan  $lapangan
+     * @return \Illuminate\View\View
      */
     public function edit(Lapangan $lapangan)
     {
@@ -62,10 +78,15 @@ class LapanganController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data lapangan di database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lapangan  $lapangan
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Lapangan $lapangan)
     {
+        // Validasi input
         $validated = $request->validate([
             'nama_lapangan' => 'required|string|max:50',
             'kategori' => 'required|in:VIP,Reguler',
@@ -73,19 +94,26 @@ class LapanganController extends Controller
             'status_lapangan' => 'required|in:Tersedia,Perawatan',
         ]);
 
+        // Update data lapangan
         $lapangan->update($validated);
 
+        // Redirect kembali dengan pesan sukses
         return redirect()->route('lapangan.index')
             ->with('success', 'Lapangan berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus data lapangan dari database.
+     *
+     * @param  \App\Models\Lapangan  $lapangan
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Lapangan $lapangan)
     {
+        // Hapus data lapangan
         $lapangan->delete();
 
+        // Redirect kembali dengan pesan sukses
         return redirect()->route('lapangan.index')
             ->with('success', 'Lapangan berhasil dihapus.');
     }
