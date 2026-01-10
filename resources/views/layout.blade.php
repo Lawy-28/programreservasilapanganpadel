@@ -57,6 +57,15 @@
         <a class="navbar-brand fw-bold text-primary" href="#">
             <i class="bi bi-tennis-ball"></i> Padel's
         </a>
+        
+        <div class="d-flex">
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </div>
     </div>
 </nav>
 
@@ -77,10 +86,12 @@
                         <i class="bi bi-people"></i>
                         Data Pelanggan
                     </a>
+                    @if(auth()->user()->isAdmin())
                     <a href="{{ route('lapangan.index') }}" class="list-group-item list-group-item-action {{ request()->is('lapangan') ? 'active' : '' }}">
                         <i class="bi bi-grid"></i>
                         Data Lapangan
                     </a>
+                    @endif
                 </div>
             </div>
 
