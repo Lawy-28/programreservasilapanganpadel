@@ -15,20 +15,62 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Membuat user Admin
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Administrator',
+                'password' => bcrypt('admin123'),
+                'role' => User::ROLE_ADMIN,
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'role' => User::ROLE_ADMIN,
-            'password' => bcrypt('password'),
-        ]);
+        // Membuat user Staff
+        User::updateOrCreate(
+            ['email' => 'staff@gmail.com'],
+            [
+                'name' => 'Staff Lapangan',
+                'password' => bcrypt('staff123'),
+                'role' => User::ROLE_STAFF,
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Staff User',
-            'email' => 'staff@example.com',
-            'role' => User::ROLE_STAFF,
-            'password' => bcrypt('password'),
-        ]);
+        // Menambahkan data Lapangan
+        \DB::table('lapangan')->updateOrInsert(
+            ['nama_lapangan' => 'Padel Court 1'],
+            [
+                'kategori' => 'VIP',
+                'harga_per_jam' => 250000,
+                'status_lapangan' => 'Tersedia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        \DB::table('lapangan')->updateOrInsert(
+            ['nama_lapangan' => 'Padel Court 2'],
+            [
+                'kategori' => 'Reguler',
+                'harga_per_jam' => 150000,
+                'status_lapangan' => 'Tersedia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // Menambahkan data Pelanggan
+        \DB::table('pelanggan')->updateOrInsert(
+            ['nama' => 'Budi Santoso'],
+            [
+                'no_hp' => '08123456789',
+                'email' => 'budi@gmail.com',
+                'status' => 'aktif',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // Opsi: Tambahkan data dummy menggunakan factory jika perlu
+        // User::factory(5)->create();
     }
 }
