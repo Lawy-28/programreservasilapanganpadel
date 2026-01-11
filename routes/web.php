@@ -6,6 +6,7 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PlaygroundController;
+use App\Http\Controllers\JadwalController;
 
 use App\Http\Controllers\AuthController;
 
@@ -23,12 +24,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('pelanggan', PelangganController::class);
         Route::resource('reservasi', ReservasiController::class);
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     });
 
     // Accessible only by Admin
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('lapangan', LapanganController::class);
-        
+
         // Playground or other admin-only routes if any
         Route::get('/playground', [PlaygroundController::class, 'index'])->name('playground');
     });
