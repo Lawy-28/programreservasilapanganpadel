@@ -46,7 +46,8 @@
                                 <td>
                                     <div>{{ \Carbon\Carbon::parse($r->tanggal)->format('d M Y') }}</div>
                                     <small class="text-muted">
-                                        {{ \Carbon\Carbon::parse($r->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($r->jam_selesai)->format('H:i') }}
+                                        {{ \Carbon\Carbon::parse($r->jam_mulai)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($r->jam_selesai)->format('H:i') }}
                                     </small>
                                 </td>
                                 <td class="fw-medium">Rp {{ number_format($r->total_bayar, 0, ',', '.') }}</td>
@@ -61,18 +62,17 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
-                                        <a href="{{ route('reservasi.edit', $r->id_reservasi) }}" 
-                                           class="btn btn-sm btn-outline-primary" 
-                                           title="Edit">
+                                        <a href="{{ route('reservasi.edit', $r->id_reservasi) }}"
+                                            class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <form action="{{ route('reservasi.destroy', $r->id_reservasi) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('reservasi.destroy', $r->id_reservasi) }}" method="POST"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" 
-                                                    class="btn btn-sm btn-outline-danger" 
-                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus reservasi ini?')"
-                                                    title="Hapus">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus reservasi ini?')"
+                                                title="Hapus">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>

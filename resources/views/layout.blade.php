@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Padel's Reservasi</title>
     <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -51,46 +54,55 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
-    <div class="container-fluid">
-        <!-- Logo / Brand -->
-        <a class="navbar-brand fw-bold text-primary" href="#">
-            <i class="bi bi-tennis-ball"></i> Padel's
-        </a>
-        
-        <div class="d-flex">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
-            </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+        <div class="container-fluid">
+            <!-- Logo / Brand -->
+            <a class="navbar-brand fw-bold text-primary" href="#">
+                <i class="bi bi-tennis-ball"></i> Padel's
+            </a>
+
+            <div class="d-flex">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-3 col-lg-2 sidebar">
                 <div class="list-group">
-                    <a href="{{ route('dashboard') }}" class="list-group-item list-group-item-action {{ request()->is('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}"
+                        class="list-group-item list-group-item-action {{ request()->is('dashboard') ? 'active' : '' }}">
                         <i class="bi bi-speedometer2"></i>
                         Dashboard
                     </a>
-                    <a href="{{ route('reservasi.index') }}" class="list-group-item list-group-item-action {{ request()->is('reservasi') ? 'active' : '' }}">
+                    <a href="{{ route('reservasi.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->is('reservasi') ? 'active' : '' }}">
                         <i class="bi bi-calendar3"></i>
                         Reservasi
                     </a>
-                    <a href="{{ route('pelanggan.index') }}" class="list-group-item list-group-item-action {{ request()->is('pelanggan') ? 'active' : '' }}">
+                    <a href="{{ route('jadwal.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->is('jadwal') ? 'active' : '' }}">
+                        <i class="bi bi-calendar-range"></i>
+                        Jadwal
+                    </a>
+                    <a href="{{ route('pelanggan.index') }}"
+                        class="list-group-item list-group-item-action {{ request()->is('pelanggan') ? 'active' : '' }}">
                         <i class="bi bi-people"></i>
                         Data Pelanggan
                     </a>
                     @if(auth()->user()->isAdmin())
-                    <a href="{{ route('lapangan.index') }}" class="list-group-item list-group-item-action {{ request()->is('lapangan') ? 'active' : '' }}">
-                        <i class="bi bi-grid"></i>
-                        Data Lapangan
-                    </a>
+                        <a href="{{ route('lapangan.index') }}"
+                            class="list-group-item list-group-item-action {{ request()->is('lapangan') ? 'active' : '' }}">
+                            <i class="bi bi-grid"></i>
+                            Data Lapangan
+                        </a>
                     @endif
                 </div>
             </div>
@@ -102,7 +114,7 @@
                         {{ $message }}
                     </div>
                 @endif
-                
+
                 @if ($message = Session::get('error'))
                     <div class="alert" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
                         {{ $message }}
@@ -115,6 +127,9 @@
     </div>
 
     <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

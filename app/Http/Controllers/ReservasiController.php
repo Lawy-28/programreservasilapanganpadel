@@ -33,7 +33,7 @@ class ReservasiController extends Controller
     {
         // Aturan 1: Hanya pelanggan yang statusnya 'aktif' yang bisa melakukan reservasi
         $pelanggan = Pelanggan::where('status', 'aktif')->get();
-        $lapangan = Lapangan::all(); 
+        $lapangan = Lapangan::all();
         return view('reservasi.create', compact('pelanggan', 'lapangan'));
     }
 
@@ -69,7 +69,7 @@ class ReservasiController extends Controller
         // Aturan Tambahan: Cek Status Lapangan (Tidak boleh 'Perawatan')
         $lapangan = Lapangan::find($request->id_lapangan);
         if ($lapangan && $lapangan->status_lapangan == 'Perawatan') {
-             return back()->withErrors(['id_lapangan' => 'Lapangan sedang dalam perawatan, tidak dapat dipilih.'])->withInput();
+            return back()->withErrors(['id_lapangan' => 'Lapangan sedang dalam perawatan, tidak dapat dipilih.'])->withInput();
         }
 
         // Aturan 4 & 11: Cek Tabrakan Jadwal (Overlap)
@@ -81,7 +81,7 @@ class ReservasiController extends Controller
             ->where(function ($query) use ($request) {
                 // Logika overlap: (StartA < EndB) && (EndA > StartB)
                 $query->where('jam_mulai', '<', $request->jam_selesai)
-                      ->where('jam_selesai', '>', $request->jam_mulai);
+                    ->where('jam_selesai', '>', $request->jam_mulai);
             })
             ->exists();
 
@@ -94,11 +94,11 @@ class ReservasiController extends Controller
         $lapangan = Lapangan::findOrFail($request->id_lapangan);
         $start = Carbon::parse($request->jam_mulai);
         $end = Carbon::parse($request->jam_selesai);
-        
+
         // Aturan 6: Durasi dihitung dalam satuan jam (bisa desimal)
         $minutes = $start->diffInMinutes($end);
         $durasi_jam = $minutes / 60;
-        
+
         // Total bayar = durasi * harga per jam lapangan
         $total_bayar = $durasi_jam * $lapangan->harga_per_jam;
 
@@ -110,12 +110,12 @@ class ReservasiController extends Controller
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
             'total_bayar' => $total_bayar,
-            'status_reservasi' => $request->status_reservasi,
+            'status_reservasi' => ucfirst($request->status_reservasi),
         ]);
 
         // Berhasil, kembali ke index
         return redirect()->route('reservasi.index')
-                         ->with('success', 'Reservasi berhasil dibuat. Total: Rp ' . number_format($total_bayar, 0, ',', '.'));
+            ->with('success', 'Reservasi berhasil dibuat. Total: Rp ' . number_format($total_bayar, 0, ',', '.'));
     }
 
     /**
@@ -132,12 +132,12 @@ class ReservasiController extends Controller
         // Aturan 12: Jika sudah selesai, tidak boleh diedit
         if ($reservasi->status_reservasi == 'Selesai') {
             return redirect()->route('reservasi.index')
-                             ->with('error', 'Reservasi yang sudah selesai tidak dapat diubah.');
+                ->with('error', 'Reservasi yang sudah selesai tidak dapat diubah.');
         }
 
         // Ambil data pelanggan aktif
         $pelanggan = Pelanggan::where('status', 'aktif')->get();
-        
+
         // Jika pelanggan yang ada di reservasi ini sekarang statusnya nonaktif,
         // tetap masukkan ke dalam list pilihan agar form tidak error saat menampilkan data lama.
         if ($reservasi->pelanggan && $reservasi->pelanggan->status !== 'aktif') {
@@ -162,8 +162,8 @@ class ReservasiController extends Controller
 
         // Aturan 12: Mencegah update jika sudah Selesai (Double check di sisi server)
         if ($reservasi->status_reservasi == 'Selesai') {
-             return redirect()->route('reservasi.index')
-                             ->with('error', 'Reservasi yang sudah selesai tidak dapat diubah.');
+            return redirect()->route('reservasi.index')
+                ->with('error', 'Reservasi yang sudah selesai tidak dapat diubah.');
         }
 
         // Validasi input
@@ -183,7 +183,7 @@ class ReservasiController extends Controller
             ->where('status_reservasi', '!=', 'Batal')
             ->where(function ($query) use ($request) {
                 $query->where('jam_mulai', '<', $request->jam_selesai)
-                      ->where('jam_selesai', '>', $request->jam_mulai);
+                    ->where('jam_selesai', '>', $request->jam_mulai);
             })
             ->exists();
 
@@ -195,7 +195,7 @@ class ReservasiController extends Controller
         // Kita perlu cek ulang apakah lapangan yang dipilih (baru/lama) statusnya Perawatan
         $lapangan = Lapangan::find($request->id_lapangan);
         if ($lapangan && $lapangan->status_lapangan == 'Perawatan') {
-             return back()->withErrors(['id_lapangan' => 'Lapangan sedang dalam perawatan, tidak dapat dipilih.'])->withInput();
+            return back()->withErrors(['id_lapangan' => 'Lapangan sedang dalam perawatan, tidak dapat dipilih.'])->withInput();
         }
 
         // Hitung Ulang Total Bayar (siapa tahu pindah lapangan atau jam)
@@ -214,11 +214,11 @@ class ReservasiController extends Controller
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
             'total_bayar' => $total_bayar,
-            'status_reservasi' => $request->status_reservasi,
+            'status_reservasi' => ucfirst($request->status_reservasi),
         ]);
 
         return redirect()->route('reservasi.index')
-                         ->with('success', 'Reservasi berhasil diperbarui.');
+            ->with('success', 'Reservasi berhasil diperbarui.');
     }
 
     /**
@@ -230,11 +230,11 @@ class ReservasiController extends Controller
     public function destroy($id)
     {
         $reservasi = Reservasi::findOrFail($id);
-        
+
         // Menghapus reservasi dari database
         $reservasi->delete();
-        
+
         return redirect()->route('reservasi.index')
-                         ->with('success', 'Reservasi berhasil dihapus.');
+            ->with('success', 'Reservasi berhasil dihapus.');
     }
 }
