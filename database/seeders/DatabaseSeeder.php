@@ -12,11 +12,14 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's database.
+     * Menjalankan seeder untuk mengisi database aplikasi.
      */
     public function run(): void
     {
+        // Contoh: Membuat 10 user dummy menggunakan factory (sedang dikomentari/tidak aktif)
         // User::factory(10)->create();
 
+        // Memanggil UserSeeder untuk mengisi data user (Admin, Staff, dll)
         $this->call(UserSeeder::class);
     }
 }
