@@ -70,12 +70,12 @@
                 @forelse($reservasiTerbaru as $res)
                 <tr>
                     <td class="ps-4 fw-medium">{{ $res->pelanggan->nama }}</td>
-                    <td>{{ $res->lapangan->nama }}</td>
+                    <td>{{ $res->lapangan->nama_lapangan }}</td>
                     <td>{{ $res->tanggal }}</td>
                     <td>{{ $res->jam_mulai }} - {{ $res->jam_selesai }}</td>
                     <td>
                         <span class="badge rounded-pill 
-                            {{ $res->status_reservasi == 'Lunas' ? 'bg-success' : ($res->status_reservasi == 'Batal' ? 'bg-danger' : 'bg-warning text-dark') }}">
+                            {{ $res->status_reservasi == 'Selesai' ? 'bg-success' : ($res->status_reservasi == 'Batal' ? 'bg-danger' : 'bg-primary') }}">
                             {{ $res->status_reservasi }}
                         </span>
                     </td>
