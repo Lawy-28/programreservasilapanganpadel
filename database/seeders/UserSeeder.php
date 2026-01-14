@@ -12,16 +12,6 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Membuat akun Admin
-        // Menggunakan firstOrCreate untuk mengecek apakah email sudah ada
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'], // Kunci pencarian: Jika email ini ditemukan, data tidak akan dibuat ulang
-            [
-                'name' => 'Administrator', // Nama pengguna
-                'password' => bcrypt('password'), // Password yang dienkripsi
-                'role' => 'admin', // Peran sebagai admin
-            ]
-        );
 
         // Membuat akun Staff
         User::firstOrCreate(

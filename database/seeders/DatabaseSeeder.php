@@ -19,7 +19,5 @@ class DatabaseSeeder extends Seeder
         // Contoh: Membuat 10 user dummy menggunakan factory (sedang dikomentari/tidak aktif)
         // User::factory(10)->create();
 
-        // Memanggil UserSeeder untuk mengisi data user (Admin, Staff, dll)
-        $this->call(UserSeeder::class);
     }
 }
