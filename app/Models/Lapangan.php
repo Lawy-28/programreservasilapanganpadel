@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lapangan extends Model
 {
-    protected $table = 'lapangan';       // 🔴 INI KUNCI UTAMA
-    protected $primaryKey = 'id_lapangan';
+    protected $table = 'lapangan';       // Menentukan nama tabel yang digunakan (defaultnya: lapangans)
+    protected $primaryKey = 'id_lapangan'; // Menentukan primary key kustom (defaultnya: id)
 
+    // Kolom-kolom yang boleh diisi secara massal (Mass Assignment)
     protected $fillable = [
         'nama_lapangan',
         'kategori',

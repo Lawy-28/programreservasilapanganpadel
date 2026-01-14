@@ -42,7 +42,7 @@ class PelangganController extends Controller
         $request->validate([
             'nama' => 'required|max:100',
             'no_hp' => 'required|numeric|digits_between:10,15', // Wajib angka, 10-15 digit
-            'email' => 'nullable|email|max:100', // Boleh kosong, jika ada harus format email valid
+            'email' => 'nullable|email|max:100',      // Boleh kosong, jika ada harus format email valid
             'status' => 'required|in:aktif,nonaktif', // Hanya boleh 'aktif' atau 'nonaktif'
         ], [
             // Pesan error kustom agar lebih mudah dimengerti user
@@ -55,9 +55,9 @@ class PelangganController extends Controller
 
         // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()->route('pelanggan.index')
-                        ->with('success', 'Data Pelanggan berhasil ditambahkan');
+            ->with('success', 'Data Pelanggan berhasil ditambahkan');
     }
-    
+
     /**
      * Menampilkan formulir edit untuk mengubah data pelanggan.
      * Mencari pelanggan berdasarkan ID, jika tidak ditemukan akan menampilkan error 404.
@@ -69,7 +69,7 @@ class PelangganController extends Controller
     {
         // Cari data pelanggan berdasarkan ID
         $pelanggan = Pelanggan::findOrFail($id);
-        
+
         // Kirim data pelanggan ke view edit
         return view('pelanggan.edit', compact('pelanggan'));
     }
@@ -87,7 +87,7 @@ class PelangganController extends Controller
         // 1. Validasi input ulang
         $request->validate([
             'nama' => 'required|max:100',
-            'no_hp' => 'required|numeric|digits_between:10,15', 
+            'no_hp' => 'required|numeric|digits_between:10,15',
             'email' => 'nullable|email|max:100',
             'status' => 'required|in:aktif,nonaktif',
         ], [
@@ -96,13 +96,13 @@ class PelangganController extends Controller
 
         // 2. Cari data pelanggan berdasarkan ID
         $pelanggan = Pelanggan::findOrFail($id);
-        
+
         // 3. Update data dengan input baru
         $pelanggan->update($request->all());
 
         // 4. Kembali ke halaman index dengan pesan sukses
         return redirect()->route('pelanggan.index')
-                         ->with('success', 'Data Pelanggan berhasil diperbarui');
+            ->with('success', 'Data Pelanggan berhasil diperbarui');
     }
 
     /**
@@ -115,10 +115,12 @@ class PelangganController extends Controller
     {
         // Cari pelanggan dan hapus
         $pelanggan = Pelanggan::findOrFail($id);
+
+        // Hapus (Hard Delete by default kecuali ada SoftDeletes)
         $pelanggan->delete();
 
         // Kembali dengan pesan sukses
         return redirect()->route('pelanggan.index')
-                         ->with('success', 'Data Pelanggan berhasil dihapus');
+            ->with('success', 'Data Pelanggan berhasil dihapus');
     }
 }

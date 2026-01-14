@@ -31,6 +31,9 @@
                     </div>
 
                     @php
+                        // Filter reservasi khusus untuk lapangan ini ($l->id_lapangan)
+                        // Karena kita sudah mengambil semua reservasi di controller, kita filter manual di view (Array Filtering)
+                        // Alternatif: Bisa query ulang per lapangan tapi less efficient
                         $bookings = $reservasi->where('id_lapangan', $l->id_lapangan);
                     @endphp
 

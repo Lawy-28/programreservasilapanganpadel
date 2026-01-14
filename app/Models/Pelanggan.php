@@ -12,7 +12,7 @@ class Pelanggan extends Model
     // Menentukan nama tabel (jika tidak jamak standar bahasa inggris)
     protected $table = 'pelanggan';
 
-    // Menentukan Primary Key sesuai desain 
+    // Menentukan Primary Key sesuai desain database
     protected $primaryKey = 'id_pelanggan';
 
     // Kolom yang boleh diisi (Mass Assignment)

@@ -9,9 +9,10 @@ class Reservasi extends Model
 {
     use HasFactory;
 
-    protected $table = 'reservasi';
-    protected $primaryKey = 'id_reservasi';
+    protected $table = 'reservasi';       // Nama tabel
+    protected $primaryKey = 'id_reservasi'; // Primary key kustom
 
+    // Daftar kolom yang bisa diisi
     protected $fillable = [
         'id_pelanggan',
         'id_lapangan',
@@ -23,12 +24,14 @@ class Reservasi extends Model
     ];
 
     // Relasi ke Pelanggan (Many to One)
+    // Setiap reservasi milik satu pelanggan
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
     }
 
     // Relasi ke Lapangan (Many to One)
+    // Setiap reservasi terkait dengan satu lapangan
     public function lapangan()
     {
         return $this->belongsTo(Lapangan::class, 'id_lapangan');

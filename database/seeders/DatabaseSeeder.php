@@ -16,8 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Contoh: Membuat 10 user dummy menggunakan factory (sedang dikomentari/tidak aktif)
-        // User::factory(10)->create();
+        // User::factory(10)->create(); // Kode bawaan (dimatikan) contoh buat 10 user random
 
+        // Memanggil UserSeeder
+        // Ini akan menjalankan file UserSeeder.php untuk membuat akun Admin dan Staff default
+        $this->call(UserSeeder::class);
     }
 }

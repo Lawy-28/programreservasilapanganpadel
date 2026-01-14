@@ -18,44 +18,45 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
+        'name',     // Nama user
+        'email',    // Email login
+        'password', // Password (akan dienkripsi)
+        'role',     // Peran user: admin/staff
     ];
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Kolom ini tidak akan muncul jika data user dikonversi ke JSON/Array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password',       // Sembunyikan password agar aman
+        'remember_token', // Token remember me juga rahasia
     ];
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Mengubah tipe data kolom secara otomatis saat diakses
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at' => 'datetime', // Dianggap sebagai objek tanggal
+            'password' => 'hashed',            // Otomatis hash saat di-set (Fitur Laravel baru)
         ];
     }
 
+    // Definisi konstanta untuk peran agar konsisten dan menghindari typo string 'admin'/'staff'
     const ROLE_ADMIN = 'admin';
     const ROLE_STAFF = 'staff';
 
     /**
      * Check if user is admin.
+     * Helper function untuk memudahkan pengecekan di controller/view.
+     * Contoh penggunaan: if ($user->isAdmin()) { ... }
      */
-    public function isAdmin(): bool
+    public function isAdmin(): bool // : bool artinya fungsi ini WAJIB mengembalikan True/False
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->role === self::ROLE_ADMIN; // Cek apakah kolom role nilainya sama dengan konstanta admin
     }
 
     /**

@@ -15,7 +15,10 @@ class LapanganController extends Controller
      */
     public function index()
     {
+        // Ambil semua data dari tabel lapangan
         $lapangan = Lapangan::all();
+
+        // Tampilkan ke view index
         return view('lapangan.index', compact('lapangan'));
     }
 
@@ -38,7 +41,11 @@ class LapanganController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input
+        // Validasi input form:
+        // - nama_lapangan: Wajib, max 50 karakter
+        // - kategori: Harus VIP atau Reguler
+        // - harga_per_jam: Angka minimal 0
+        // - status_lapangan: Tersedia atau Perawatan
         $validated = $request->validate([
             'nama_lapangan' => 'required|string|max:50',
             'kategori' => 'required|in:VIP,Reguler',
@@ -46,10 +53,10 @@ class LapanganController extends Controller
             'status_lapangan' => 'required|in:Tersedia,Perawatan',
         ]);
 
-        // Simpan data lapangan baru
+        // Simpan data lapangan baru ke database menggunakan Mass Assignment
         Lapangan::create($validated);
 
-        // Redirect kembali dengan pesan sukses
+        // Redirect kembali ke halaman index dengan pesan sukses
         return redirect()
             ->route('lapangan.index')
             ->with('success', 'Lapangan berhasil ditambahkan');
@@ -86,7 +93,7 @@ class LapanganController extends Controller
      */
     public function update(Request $request, Lapangan $lapangan)
     {
-        // Validasi input
+        // Validasi data yang diedit
         $validated = $request->validate([
             'nama_lapangan' => 'required|string|max:50',
             'kategori' => 'required|in:VIP,Reguler',
@@ -94,7 +101,7 @@ class LapanganController extends Controller
             'status_lapangan' => 'required|in:Tersedia,Perawatan',
         ]);
 
-        // Update data lapangan
+        // Update data lapangan di database
         $lapangan->update($validated);
 
         // Redirect kembali dengan pesan sukses
@@ -110,7 +117,7 @@ class LapanganController extends Controller
      */
     public function destroy(Lapangan $lapangan)
     {
-        // Hapus data lapangan
+        // Hapus data lapangan (hati-hati, ini permanen kecuali SoftDeletes aktif)
         $lapangan->delete();
 
         // Redirect kembali dengan pesan sukses

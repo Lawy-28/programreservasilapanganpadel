@@ -19,7 +19,12 @@ class ReservasiController extends Controller
      */
     public function index()
     {
+        // Mengambil semua data reservasi
+        // with(['pelanggan', 'lapangan']) -> Optimasi agar tidak query berulang-ulang saat menampilkan nama pelanggan/lapangan
+        // latest() -> Urutan data dari yang paling baru dibuat
         $reservasi = Reservasi::with(['pelanggan', 'lapangan'])->latest()->get();
+
+        // Kirim data ke view index untuk ditampilkan tabelnya
         return view('reservasi.index', compact('reservasi'));
     }
 
@@ -31,9 +36,13 @@ class ReservasiController extends Controller
      */
     public function create()
     {
-        // Aturan 1: Hanya pelanggan yang statusnya 'aktif' yang bisa melakukan reservasi
+        // Aturan 1: Hanya pelanggan yang statusnya 'aktif' yang bisa melakukan reservasi atau dipilih
         $pelanggan = Pelanggan::where('status', 'aktif')->get();
+
+        // Ambil semua data lapangan untuk ditampilkan di dropdown pilihan
         $lapangan = Lapangan::all();
+
+        // Tampilkan form create
         return view('reservasi.create', compact('pelanggan', 'lapangan'));
     }
 
@@ -50,14 +59,14 @@ class ReservasiController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input dasar
+        // Validasi input dasar dari form
         $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan',
-            'id_lapangan' => 'required|exists:lapangan,id_lapangan',
-            'tanggal' => 'required|date',
+            'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan', // Pastikan pelanggan ada di DB
+            'id_lapangan' => 'required|exists:lapangan,id_lapangan',    // Pastikan lapangan ada
+            'tanggal' => 'required|date',                               // Harus format tanggal valid
             'jam_mulai' => 'required',
-            'jam_selesai' => 'required|after:jam_mulai', // Aturan 5: Jam selesai harus setelah jam mulai
-            'status_reservasi' => 'required|in:Booked,Selesai,Batal',
+            'jam_selesai' => 'required|after:jam_mulai',                // Aturan 5: Jam selesai harus setelah jam mulai
+            'status_reservasi' => 'required|in:Booked,Selesai,Batal',   // Status harus salah satu dari 3 opsi ini
         ]);
 
         // Aturan 1: Validasi Tambahan untuk memastikan Pelanggan Aktif
@@ -67,6 +76,7 @@ class ReservasiController extends Controller
         }
 
         // Aturan Tambahan: Cek Status Lapangan (Tidak boleh 'Perawatan')
+        // Mencegah booking jika lapangan sedang maintenance
         $lapangan = Lapangan::find($request->id_lapangan);
         if ($lapangan && $lapangan->status_lapangan == 'Perawatan') {
             return back()->withErrors(['id_lapangan' => 'Lapangan sedang dalam perawatan, tidak dapat dipilih.'])->withInput();
@@ -80,24 +90,27 @@ class ReservasiController extends Controller
             ->where('status_reservasi', '!=', 'Batal')
             ->where(function ($query) use ($request) {
                 // Logika overlap: (StartA < EndB) && (EndA > StartB)
+                // Artinya jam booking baru dimulai SEBELUM booking lama selesai, DAN booking baru selesai SETELAH booking lama mulai
                 $query->where('jam_mulai', '<', $request->jam_selesai)
                     ->where('jam_selesai', '>', $request->jam_mulai);
             })
-            ->exists();
+            ->exists(); // Mengembalikan True jika ada yang bentrok
 
-        // Jika bentrok, kembalikan error
+        // Jika bentrok, kembalikan error ke form
         if ($isOverlap) {
             return back()->withErrors(['jam_mulai' => 'Jadwal lapangan sudah terisi pada jam tersebut.'])->withInput();
         }
 
         // Aturan 9: Hitung Total Bayar Otomatis
         $lapangan = Lapangan::findOrFail($request->id_lapangan);
+
+        // Konversi string jam ke objek Carbon untuk perhitungan
         $start = Carbon::parse($request->jam_mulai);
         $end = Carbon::parse($request->jam_selesai);
 
         // Aturan 6: Durasi dihitung dalam satuan jam (bisa desimal)
-        $minutes = $start->diffInMinutes($end);
-        $durasi_jam = $minutes / 60;
+        $minutes = $start->diffInMinutes($end); // Selisih menit
+        $durasi_jam = $minutes / 60;            // Konversi ke jam (misal 90 menit = 1.5 jam)
 
         // Total bayar = durasi * harga per jam lapangan
         $total_bayar = $durasi_jam * $lapangan->harga_per_jam;
@@ -110,10 +123,10 @@ class ReservasiController extends Controller
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
             'total_bayar' => $total_bayar,
-            'status_reservasi' => ucfirst($request->status_reservasi),
+            'status_reservasi' => ucfirst($request->status_reservasi), // Format huruf kapital awal
         ]);
 
-        // Berhasil, kembali ke index
+        // Berhasil, kembali ke index dengan pesan sukses
         return redirect()->route('reservasi.index')
             ->with('success', 'Reservasi berhasil dibuat. Total: Rp ' . number_format($total_bayar, 0, ',', '.'));
     }
@@ -127,24 +140,29 @@ class ReservasiController extends Controller
      */
     public function edit($id)
     {
+        // Cari data reservasi berdasarkan ID, jika tidak ketemu akan error 404 automatically
         $reservasi = Reservasi::findOrFail($id);
 
         // Aturan 12: Jika sudah selesai, tidak boleh diedit
+        // Mencegah perubahan data historis yang sudah valid
         if ($reservasi->status_reservasi == 'Selesai') {
             return redirect()->route('reservasi.index')
                 ->with('error', 'Reservasi yang sudah selesai tidak dapat diubah.');
         }
 
-        // Ambil data pelanggan aktif
+        // Ambil data pelanggan aktif untuk opsi ganti pelanggan
         $pelanggan = Pelanggan::where('status', 'aktif')->get();
 
         // Jika pelanggan yang ada di reservasi ini sekarang statusnya nonaktif,
         // tetap masukkan ke dalam list pilihan agar form tidak error saat menampilkan data lama.
+        // push() -> Menambahkan item ke koleksi
         if ($reservasi->pelanggan && $reservasi->pelanggan->status !== 'aktif') {
             $pelanggan->push($reservasi->pelanggan);
         }
 
         $lapangan = Lapangan::all();
+
+        // Tampilkan form edit dengan data-data tersebut
         return view('reservasi.edit', compact('reservasi', 'pelanggan', 'lapangan'));
     }
 
@@ -177,6 +195,7 @@ class ReservasiController extends Controller
         ]);
 
         // Cek Overlap (Kecuali reservasi ini sendiri)
+        // where('id_reservasi', '!=', $id) penting agar jadwalnya sendiri tidak dianggap sebagai bentrokan
         $isOverlap = Reservasi::where('id_lapangan', $request->id_lapangan)
             ->where('tanggal', $request->tanggal)
             ->where('id_reservasi', '!=', $id) // ID ini dikecualikan
@@ -229,11 +248,13 @@ class ReservasiController extends Controller
      */
     public function destroy($id)
     {
+        // Cari data yang mau dihapus
         $reservasi = Reservasi::findOrFail($id);
 
-        // Menghapus reservasi dari database
+        // Menghapus reservasi dari database (Hard delete)
         $reservasi->delete();
 
+        // Redirect kembali dengan pesan
         return redirect()->route('reservasi.index')
             ->with('success', 'Reservasi berhasil dihapus.');
     }
