@@ -17,15 +17,21 @@ class ReservasiController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Mengambil semua data reservasi
-        // with(['pelanggan', 'lapangan']) -> Optimasi agar tidak query berulang-ulang saat menampilkan nama pelanggan/lapangan
+        // Ambil tanggal dari request jika user memilih tanggal lain, default ke hari ini
+        $date = $request->input('date', Carbon::today()->format('Y-m-d'));
+
+        // Mengambil data reservasi berdasarkan tanggal yang dipilih
+        // with(['pelanggan', 'lapangan']) -> Optimasi agar tidak query berulang-ulang
         // latest() -> Urutan data dari yang paling baru dibuat
-        $reservasi = Reservasi::with(['pelanggan', 'lapangan'])->latest()->get();
+        $reservasi = Reservasi::with(['pelanggan', 'lapangan'])
+            ->whereDate('tanggal', $date)
+            ->latest()
+            ->get();
 
         // Kirim data ke view index untuk ditampilkan tabelnya
-        return view('reservasi.index', compact('reservasi'));
+        return view('reservasi.index', compact('reservasi', 'date'));
     }
 
     /**

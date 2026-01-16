@@ -8,7 +8,12 @@
                 <h5 class="card-title mb-0 fw-bold">Data Reservasi</h5>
                 <small class="text-muted">Kelola jadwal dan pembayaran reservasi</small>
             </div>
-            <div>
+            <div class="d-flex align-items-center gap-3">
+                <form action="{{ route('reservasi.index') }}" method="GET" class="d-flex align-items-center">
+                    <label for="date" class="me-2 fw-medium">Tanggal:</label>
+                    <input type="date" name="date" id="date" class="form-control form-control-sm" 
+                           value="{{ $date }}" onchange="this.form.submit()">
+                </form>
                 <a href="{{ route('reservasi.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-lg me-1"></i> Buat Reservasi
                 </a>
